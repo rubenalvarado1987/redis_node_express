@@ -26,6 +26,16 @@ client.set('londres', '51.5073219,-0.1276474');
 client.set('georgia', '41.6809707,44.0287382');
 
 
+app.use(function (req, res, next) {
+
+    res.header('Access-Control-Allow-Origin', "*");
+    res.header('Access-Control-Allow-Headers', true);
+    res.header('Access-Control-Allow-Credentials', 'Content-Type');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+    next();
+  });
+
+
 // api/search nombre de cuidad ej: http://localhost:3000/api/search?query=auckland
 app.get('/api/search', (req, res) => {
 
