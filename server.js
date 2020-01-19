@@ -4,6 +4,23 @@ const responseTime = require('response-time');
 const axios = require('axios');
 const redis = require('redis');
 const app = express();
+const path = require('path');
+
+// Cors
+app.use(function (req, res, next) {
+
+    res.header('Access-Control-Allow-Origin', "*");
+    res.header('Access-Control-Allow-Headers', true);
+    res.header('Access-Control-Allow-Credentials', 'Content-Type');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+    next();
+});
+
+
+// Modulos para el socket
+const socketIO = require('socket.io');
+const http = require('http');
+const server = http.createServer(app);
 
 // Creación y conexion a Redis en local instance.
 const client = redis.createClient();
@@ -26,14 +43,12 @@ client.set('londres', '51.5073219,-0.1276474');
 client.set('georgia', '41.6809707,44.0287382');
 
 
-app.use(function (req, res, next) {
 
-    res.header('Access-Control-Allow-Origin', "*");
-    res.header('Access-Control-Allow-Headers', true);
-    res.header('Access-Control-Allow-Credentials', 'Content-Type');
-    res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-    next();
-  });
+const publicPath = path.resolve(__dirname, './public');
+var port = process.env.PORT || 3000;
+
+//WebApp local para pruebas
+app.use(express.static(publicPath));
 
 
 // api/search nombre de cuidad ej: http://localhost:3000/api/search?query=auckland
@@ -60,6 +75,9 @@ app.get('/api/search', (req, res) => {
             console.log('searchUrl:', searchUrl + result);
             return axios.get(searchUrl + result)
                 .then(response => {
+
+                    //console.log('response the darksky: ',response);
+
                     const responseJSON = response.data;
                     return res.status(200).json({ source: 'Darksky API', ...responseJSON, });
                 })
@@ -70,6 +88,14 @@ app.get('/api/search', (req, res) => {
     });
 });
 
-app.listen(3000, () => {
-    console.log('Server listening on port: ', 3000);
+// IO = esta es la comunicacion del backend
+module.exports.io = socketIO(server);
+require('./sockets/socket');
+
+server.listen(port, (err) => {
+
+    if (err) throw new Error(err);
+
+    console.log(`Servidor corriendo en puerto ${ port }`);
+
 });

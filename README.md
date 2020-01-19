@@ -21,3 +21,8 @@ API server to `http://localhost:3000/`.
 ## Generate Gitignore
  https://www.gitignore.io/api/node,redis
 
+## Sockets
+Prueba desde la consola del navegador
+`socket.emit('getTime',{utc: "santiago"});``
+
+
