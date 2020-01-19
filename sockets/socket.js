@@ -49,7 +49,7 @@ io.on('connection', (client) => {
                     .catch(err => {
                         //console.log('err:',err);
                     }); 
-                }, 100000); 
+                }, 10000); 
             }
         });
 
