@@ -30,37 +30,39 @@ io.on('connection', (client) => {
         //Cada request al socket tiene un 10% de chances de fallar 
         //Se debe guardar el registro.
         const datetime = Date.now();
-        if (Math.random(0, 1) < 0.1){
+        if (Math.random(0, 1) < 0.1) {
             const msgErr = 'error provocated';
-            client.set(`api.errors:${datetime}`,msgErr);
-            client.emit('getTime',{ err : msgErr});
+            clientDb.set(`api.errors:${datetime}`, msgErr);
+            client.emit('getTime', { err: msgErr });
         }
+        else {
 
-        clientDb.get(`${data.utc}`, (err, result) => {
-            // If that key exist in Redis store
-            if (result) {
+            clientDb.get(`${data.utc}`, (err, result) => {
+                // If that key exist in Redis store
+                if (result) {
                     //console.log('resultdb: ',result);
                     axios.get(searchUrl + result)
-                    .then(response => {
-                        var responseJson = response.data;                     
-                        client.emit('getTime', {data: responseJson, ciudad: data.utc});   
-                    })
-                    .catch(err => {
-                        //console.log('err:',err);
-                    });    
-            
-                setInterval( () => { // ejecutamos un emit cada 10 segundos del mismo axios
-                    axios.get(searchUrl + result)
-                    .then(response => {
-                        var responseJson = response.data;                     
-                        client.emit('getTime', {data: responseJson, ciudad: data.utc});   
-                    })
-                    .catch(err => {
-                        //console.log('err:',err);
-                    }); 
-                }, 10000); 
-            }
-        });
+                        .then(response => {
+                            var responseJson = response.data;
+                            client.emit('getTime', { data: responseJson, ciudad: data.utc });
+                        })
+                        .catch(err => {
+                            //console.log('err:',err);
+                        });
+
+                    setInterval(() => { // ejecutamos un emit cada 10 segundos del mismo axios
+                        axios.get(searchUrl + result)
+                            .then(response => {
+                                var responseJson = response.data;
+                                client.emit('getTime', { data: responseJson, ciudad: data.utc });
+                            })
+                            .catch(err => {
+                                //console.log('err:',err);
+                            });
+                    }, 10000);
+                }
+            });
+        }
 
     });
 
