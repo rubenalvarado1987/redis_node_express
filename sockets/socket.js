@@ -27,6 +27,15 @@ io.on('connection', (client) => {
 
     client.on('getTime', (data, callback) => {
 
+        //Cada request al socket tiene un 10% de chances de fallar 
+        //Se debe guardar el registro.
+        const datetime = Date.now();
+        if (Math.random(0, 1) < 0.1){
+            const msgErr = 'error provocated';
+            client.set(`api.errors:${datetime}`,msgErr);
+            client.emit('getTime',{ err : msgErr});
+        }
+
         clientDb.get(`${data.utc}`, (err, result) => {
             // If that key exist in Redis store
             if (result) {
