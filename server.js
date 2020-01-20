@@ -40,7 +40,7 @@ client.set('zurich', '47.3723941,8.5423328');
 client.set('auckland', '-36.852095,174.7631803');
 client.set('sidney', '-33.8548157,151.2164539');
 client.set('londres', '51.5073219,-0.1276474');
-client.set('georgia', '41.6809707,44.0287382');
+client.set('georgia', '32.3293809,-83.1137366');
 
 
 
