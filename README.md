@@ -1,4 +1,4 @@
-# Proyecto NodeJS + Redis cache
+# Proyecto NodeJS + Redis cache + Sockets
 
 ## Install and Run Redis Server
 `brew install redis` 
